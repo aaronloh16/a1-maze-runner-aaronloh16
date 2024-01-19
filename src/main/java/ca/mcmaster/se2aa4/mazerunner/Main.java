@@ -11,6 +11,9 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
+import ca.mcmaster.se2aa4.mazerunner.MazeLoader;
+import ca.mcmaster.se2aa4.mazerunner.MazeTraverser;
+import ca.mcmaster.se2aa4.mazerunner.OutputFormatter;
 
 public class Main {
 
@@ -38,7 +41,7 @@ public class Main {
             return;
         }
 
-            String inputFilePath = cmd.getOptionValue("input");
+        String inputFilePath = cmd.getOptionValue("input");
 
 
 
@@ -61,9 +64,24 @@ public class Main {
         } catch(Exception e) {
             System.err.println("/!\\ An error has occured /!\\");
         }
+
+
+        char[][] maze = MazeLoader.LoadMaze(inputFilePath);
+
+
+        String simplePath = MazeTraverser.traverseMaze(maze);
+
+
+        String formatted = OutputFormatter.output(simplePath);
+
+
+
         logger.info("**** Computing path");
+        System.out.println(formatted);
         logger.info("PATH NOT COMPUTED");
         logger.info("** End of MazeRunner");
     }
+
+
 }
 
