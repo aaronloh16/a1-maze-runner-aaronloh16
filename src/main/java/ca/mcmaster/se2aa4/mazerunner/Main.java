@@ -1,8 +1,5 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.commons.cli.CommandLine;
@@ -11,9 +8,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
-import ca.mcmaster.se2aa4.mazerunner.MazeLoader;
-import ca.mcmaster.se2aa4.mazerunner.MazeTraverser;
-import ca.mcmaster.se2aa4.mazerunner.OutputFormatter;
 
 public class Main {
 
@@ -21,19 +15,27 @@ public class Main {
 
     public static void main(String[] args) {
 
+        //This MVP is only for a straight path such as in straight.maz.txt, but the Mazeloader
+        // doesn't recognize the empty line as spaces for some reason so must place character at end of line
+
         Options options = new Options();
+
         Option input = new Option("i", "input", true, "input file path");
         input.setRequired(true);
         options.addOption(input);
+
+        Option verify = new Option("p", true, "verify path");
+        options.addOption(verify);
+
         CommandLineParser parser = new DefaultParser();
 
-        CommandLine cmd= null;
+        CommandLine cmd = null;
 
         try {
             cmd = parser.parse(options, args);
-        }
-        catch (ParseException exp) {
+        } catch (ParseException exp) {
             System.err.println("Parsing failed because: " + exp.getMessage());
+            return;
         }
 
         if (cmd == null || !cmd.hasOption("input")) {
@@ -42,46 +44,51 @@ public class Main {
         }
 
         String inputFilePath = cmd.getOptionValue("input");
-
-
-
-
         logger.info("** Starting Maze Runner");
-        try {
-            logger.info("**** Reading the maze from file " + inputFilePath);
-            BufferedReader reader = new BufferedReader(new FileReader(inputFilePath));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                for (int idx = 0; idx < line.length(); idx++) {
-                    if (line.charAt(idx) == '#') {
-                        System.out.print("WALL ");
-                    } else if (line.charAt(idx) == ' ') {
-                        System.out.print("PASS ");
-                    }
-                }
-                System.out.print(System.lineSeparator());
-            }
-        } catch(Exception e) {
-            System.err.println("/!\\ An error has occured /!\\");
+
+
+
+        MazeLoader loader = new MazeLoader();
+
+
+        char[][] maze = loader.loadMaze(inputFilePath);
+
+
+        if (maze == null) {
+            logger.error("Failed to load the maze.");
+            return;
         }
 
 
-        char[][] maze = MazeLoader.LoadMaze(inputFilePath);
+        logger.info("**** Maze to traverse:");
+        printMaze(maze);
 
 
-        String simplePath = MazeTraverser.traverseMaze(maze);
+        MazeTraverser traverser = new MazeTraverser();
 
+        if (cmd.hasOption(verify)) {
+            String pathToVerify = cmd.getOptionValue(verify);
+            System.out.println("Path to verify: " + pathToVerify);
+            boolean isValid = traverser.verifyPath(maze, pathToVerify);
+            logger.info("Path verification result: " + (isValid ? "Valid" : "Invalid"));
+        } else {
+            logger.info("**** Computing path:");
+            String path = traverser.traverseMaze(maze);
+            System.out.println(path);
+        }
 
-        String formatted = OutputFormatter.output(simplePath);
-
-
-
-        logger.info("**** Computing path");
-        System.out.println(formatted);
-        logger.info("PATH NOT COMPUTED");
         logger.info("** End of MazeRunner");
+
+        }
+
+
+    private static void printMaze(char[][] maze){
+        for (char[] row : maze) {
+            for (char cell : row) {
+                System.out.print(cell);
+            }
+            System.out.println();
+        }
     }
-
-
 }
 
