@@ -67,14 +67,16 @@ public class Main {
         MazeTraverser traverser = new MazeTraverser();
 
         if (cmd.hasOption(verify)) {
-            String pathToVerify = cmd.getOptionValue(verify);
+            String pathToVerify = cmd.getOptionValue(verify).replace(" ","");
             System.out.println("Path to verify: " + pathToVerify);
             boolean isValid = traverser.verifyPath(maze, pathToVerify);
             logger.info("Path verification result: " + (isValid ? "Valid" : "Invalid"));
         } else {
             logger.info("**** Computing path:");
             String path = traverser.traverseMaze(maze);
-            System.out.println(path);
+            OutputFormatter formatter = new OutputFormatter();
+            String factorizedPath= formatter.toFactorizedForm(path);
+            System.out.println(factorizedPath);
         }
 
         logger.info("** End of MazeRunner");
