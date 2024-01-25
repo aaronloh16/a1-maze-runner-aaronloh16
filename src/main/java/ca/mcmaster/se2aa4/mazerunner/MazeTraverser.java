@@ -2,6 +2,32 @@ package ca.mcmaster.se2aa4.mazerunner;
 
 public class MazeTraverser {
 
+    public enum Direction {
+        NORTH, EAST, SOUTH, WEST;
+
+        public Direction turnRight() {
+            return switch (this) {
+                case NORTH -> EAST;
+                case EAST -> SOUTH;
+                case SOUTH -> WEST;
+                case WEST -> NORTH;
+                default -> throw new IllegalStateException("Unknown direction: " + this);
+            };
+        }
+
+
+        public Direction turnLeft() {
+            return switch (this) {
+                case NORTH -> WEST;
+                case WEST -> SOUTH;
+                case SOUTH -> EAST;
+                case EAST -> NORTH;
+                default -> throw new IllegalStateException("Unknown direction: " + this);
+            };
+        }
+    }
+
+
     public String traverseMaze(char[][] maze) {
         // Initialize position and direction(needs implementing), so far assuming east to west traveral only
         int x = findStartX(maze);
