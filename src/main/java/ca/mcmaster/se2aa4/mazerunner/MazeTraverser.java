@@ -60,7 +60,7 @@ public class MazeTraverser {
         return getAdjacentCoordinates(x, y, direction);
     }
 
-    private int findStartX(char[][] maze) {  //used to be findPathRow in MVP
+    private int findStartX(char[][] maze) {  //used to be called findPathRow in  MVP
         for (int x = 0; x < maze.length; x++) {
             if (maze[x][0] == ' ') {
                 return x;

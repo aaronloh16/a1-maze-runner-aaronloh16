@@ -26,6 +26,7 @@ public class OutputFormatter {
 
                 count = 1;
                 prevChar = currentChar;
+                factorizedPath.append(" ");
             }
         }
 
