@@ -135,19 +135,36 @@ public class MazeTraverser {
     }
 
 
-
-
-
-
-
     public boolean verifyPath(char[][] maze, String path) {
+        int startX = findStartX(maze); // Assuming this method returns {x, y} for the start
+        int[] exitCoordinates = findExitCoordinates(maze);
+        if (startX == -1 || exitCoordinates[0] == -1) {
+            return false; //invalid maze
+        }
 
-        long forwardMoves = path.chars().filter(ch -> ch == 'F').count(); //count forward moves in path
+        int x = startX;
+        int y = 0;
+        Direction direction = Direction.EAST; // Assuming the entrance faces east
 
-        int mazeWidth = maze[0].length;
+        for (char move : path.toCharArray()) {
+            if (move == 'F') {
+                if (canMoveForward(x, y, direction, maze)) {
+                    int[] newCoordinates = moveForward(x, y, direction);
+                    x = newCoordinates[0];
+                    y = newCoordinates[1];
+                } else {
+                    return false; //trying to go into a wall = concussion, which is bad
+                }
+            } else if (move == 'R') {
+                direction = direction.turnRight();
+            } else if (move == 'L') {
+                direction = direction.turnLeft();
+            } else {
+                return false; //if user inuputs unknown character
+            }
+        }
 
-        // Verify if the number of forward moves equals the maze width minus 1, very MVP
-        return forwardMoves == (mazeWidth - 1);
+        return x == exitCoordinates[0] && y == exitCoordinates[1]; // Check if the path ends at the exit
     }
 
 

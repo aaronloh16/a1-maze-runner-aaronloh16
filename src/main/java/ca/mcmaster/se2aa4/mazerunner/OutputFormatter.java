@@ -23,10 +23,12 @@ public class OutputFormatter {
                 count++;
             } else {
                 appendCharAndCount(factorizedPath, prevChar, count);
+
+
                 factorizedPath.append(" "); //hard to test if works yet since can only go forward currently
+
                 count = 1;
                 prevChar = currentChar;
-                factorizedPath.append(" ");
             }
         }
 
