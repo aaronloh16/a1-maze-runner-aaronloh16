@@ -1,23 +1,134 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
 public class MazeTraverser {
-    public String traverseMaze(char[][] maze) {
-        // ASSUMES the maze is a straight horizontal line with walls on top and bottom.
 
-        int pathRow = findPathRow(maze);
-        if (pathRow == -1) {
-            return "No path found in the maze";
+    public enum Direction {
+        NORTH, EAST, SOUTH, WEST;
+
+        public Direction turnRight() {
+            return switch (this) {
+                case NORTH -> EAST;
+                case EAST -> SOUTH;
+                case SOUTH -> WEST;
+                case WEST -> NORTH;
+                default -> throw new IllegalStateException("Unknown direction: " + this);
+            };
+        }
+
+
+        public Direction turnLeft() {
+            return switch (this) {
+                case NORTH -> WEST;
+                case WEST -> SOUTH;
+                case SOUTH -> EAST;
+                case EAST -> NORTH;
+                default -> throw new IllegalStateException("Unknown direction: " + this);
+            };
+        }
+    }
+
+
+    private int[] getAdjacentCoordinates(int x, int y, Direction direction) {
+        return switch (direction) {
+            case NORTH -> new int[]{x - 1, y};
+            case EAST -> new int[]{x, y + 1};
+            case SOUTH -> new int[]{x + 1, y};
+            case WEST -> new int[]{x, y - 1};
+        };
+    }
+
+    private boolean isValidMove(int x, int y, char[][] maze) {
+        return x >= 0 && x < maze.length && y >= 0 && y < maze[0].length && maze[x][y] == ' ';
+    }
+
+    private boolean canTurnRight(int x, int y, Direction direction, char[][] maze) {
+        int[] rightCoordinates = getAdjacentCoordinates(x, y, direction.turnRight());
+        return isValidMove(rightCoordinates[0], rightCoordinates[1], maze);
+    }
+
+    private boolean canTurnLeft(int x, int y, Direction direction, char[][] maze) {
+        int[] leftCoordinates = getAdjacentCoordinates(x, y, direction.turnLeft());
+        return isValidMove(leftCoordinates[0], leftCoordinates[1], maze);
+    }
+
+    private boolean canMoveForward(int x, int y, Direction direction, char[][] maze) {
+        int[] forwardCoordinates = getAdjacentCoordinates(x, y, direction);
+        return isValidMove(forwardCoordinates[0], forwardCoordinates[1], maze);
+    }
+
+    private int[] moveForward(int x, int y, Direction direction) {
+        return getAdjacentCoordinates(x, y, direction);
+    }
+
+    private int findStartX(char[][] maze) {  //used to be called findPathRow in  MVP
+        for (int x = 0; x < maze.length; x++) {
+            if (maze[x][0] == ' ') {
+                return x;
+            }
+        }
+        return -1; // if its not found
+    }
+
+    private int[] findExitCoordinates(char[][] maze) {
+        for (int x = 0; x < maze.length; x++) {
+            if (maze[x][maze[0].length - 1] == ' ') { //same as find entrance but for west side
+                return new int[]{x, maze[0].length - 1};
+            }
+        }
+        return new int[]{-1, -1};
+    }
+
+
+
+
+
+    public String traverseMaze(char[][] maze) {
+        int[] exitCoordinates = findExitCoordinates(maze);
+        if (exitCoordinates[0] == -1 || exitCoordinates[1] == -1) {
+            return "Exit not found";
+        }
+
+        int x = findStartX(maze);
+        int y = 0;
+        Direction direction = Direction.EAST;
+
+        if (x == -1) {
+            return "Entrance not found";
         }
 
         StringBuilder path = new StringBuilder();
 
+        int iterationCount = 0;
+        int limit = 1000; // Set a limit to prevent infinite loops
 
-        for (int col = 0; col < maze[0].length - 1; col++) {
-            if (maze[pathRow][col] == ' ') {
+        while ((x != exitCoordinates[0] || y != exitCoordinates[1]) && iterationCount < limit) {
+            System.out.println("Step " + iterationCount + ": Position (" + x + ", " + y + "), Direction: " + direction);
+
+            if (canTurnRight(x, y, direction, maze)) {
+                direction = direction.turnRight();
+                path.append('R');
+                int[] newCoordinates = moveForward(x, y, direction);
+                x = newCoordinates[0];
+                y = newCoordinates[1];
                 path.append('F');
+            } else if (canMoveForward(x, y, direction, maze)) {
+                int[] newCoordinates = moveForward(x, y, direction);
+                x = newCoordinates[0];
+                y = newCoordinates[1];
+                path.append('F');
+            } else if (canTurnLeft(x, y, direction, maze)) { // Check if can turn left
+                direction = direction.turnLeft();
+                path.append('L');
             } else {
-                return "Encountered an obstacle";
+                // Dead-end, turn around
+                direction = direction.turnLeft().turnLeft();
+                path.append('L').append('L');
             }
+            iterationCount++;
+        }
+
+        if (iterationCount >= limit) {
+            return "possible infinite loop";
         }
 
         return path.toString();
@@ -26,28 +137,22 @@ public class MazeTraverser {
 
 
 
-        public boolean verifyPath(char[][] maze, String path) {
-
-            long forwardMoves = path.chars().filter(ch -> ch == 'F').count(); //count forward moves in path
-
-            int mazeWidth = maze[0].length;
-
-            // Verify if the number of forward moves equals the maze width minus 1, very MVP
-            return forwardMoves == (mazeWidth - 1);
-        }
 
 
 
+    public boolean verifyPath(char[][] maze, String path) {
 
-    private int findPathRow(char[][] maze) {
-        for (int row = 0; row < maze.length; row++) {
-            // Check if the first and last columns in this row are not walls,
-            // indicating that this row contains the path
-            if (maze[row][0] == ' ') {
-                return row;
-            }
-        }
-        return -1;
+        long forwardMoves = path.chars().filter(ch -> ch == 'F').count(); //count forward moves in path
+
+        int mazeWidth = maze[0].length;
+
+        // Verify if the number of forward moves equals the maze width minus 1, very MVP
+        return forwardMoves == (mazeWidth - 1);
     }
+
+
+
+
+
 }
 

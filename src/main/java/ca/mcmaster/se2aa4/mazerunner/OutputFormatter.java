@@ -26,6 +26,7 @@ public class OutputFormatter {
                 factorizedPath.append(" "); //hard to test if works yet since can only go forward currently
                 count = 1;
                 prevChar = currentChar;
+                factorizedPath.append(" ");
             }
         }
 
