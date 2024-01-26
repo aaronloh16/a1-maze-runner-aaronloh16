@@ -136,15 +136,22 @@ public class MazeTraverser {
 
 
     public boolean verifyPath(char[][] maze, String path) {
-        int startX = findStartX(maze); // Assuming this method returns {x, y} for the start
+        int startX = findStartX(maze);
         int[] exitCoordinates = findExitCoordinates(maze);
         if (startX == -1 || exitCoordinates[0] == -1) {
             return false; //invalid maze
         }
 
+        boolean checkEastWest = pathSimulate(maze, path, startX, 0, Direction.EAST, exitCoordinates);
+        boolean checkWestEast = pathSimulate(maze, path, exitCoordinates[0],exitCoordinates[1],Direction.WEST, new int[]{startX, 0});
+        return checkEastWest||checkWestEast;
+    }
+
+
+    private boolean pathSimulate(char[][] maze, String path,int startX, int startY, Direction startingDirection, int[] exitCoordinates ){
         int x = startX;
-        int y = 0;
-        Direction direction = Direction.EAST; // Assuming the entrance faces east
+        int y = startY;
+        Direction direction = startingDirection; // Assuming the entrance faces east
 
         for (char move : path.toCharArray()) {
             if (move == 'F') {
