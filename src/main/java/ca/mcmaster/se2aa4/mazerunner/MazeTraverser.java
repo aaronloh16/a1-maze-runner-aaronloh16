@@ -98,11 +98,8 @@ public class MazeTraverser implements Traverser {
 
         StringBuilder path = new StringBuilder();
 
-        int iterationCount = 0;
-        int limit = 100000; // Set a limit to prevent infinite loops
 
-        while ((x != exitCoordinates[0] || y != exitCoordinates[1]) && iterationCount < limit) {
-            System.out.println("Step " + iterationCount + ": Position (" + x + ", " + y + "), Direction: " + direction);
+        while ((x != exitCoordinates[0] || y != exitCoordinates[1])) {
 
             if (canTurnRight(x, y, direction, maze)) {
                 direction = direction.turnRight();
@@ -124,13 +121,7 @@ public class MazeTraverser implements Traverser {
                 direction = direction.turnLeft().turnLeft();
                 path.append('L').append('L');
             }
-            iterationCount++;
         }
-
-        if (iterationCount >= limit) {
-            return "possible infinite loop";
-        }
-
         return path.toString();
     }
 
@@ -173,10 +164,6 @@ public class MazeTraverser implements Traverser {
 
         return x == exitCoordinates[0] && y == exitCoordinates[1]; // Check if the path ends at the exit
     }
-
-
-
-
 
 }
 
