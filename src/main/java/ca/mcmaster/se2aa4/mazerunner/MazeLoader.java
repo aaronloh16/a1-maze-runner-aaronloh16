@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MazeLoader {
+public class MazeLoader implements Loader {
 
     // This class loads the maze from a file into a 2D character array.
     public char[][] loadMaze(String filePath) {

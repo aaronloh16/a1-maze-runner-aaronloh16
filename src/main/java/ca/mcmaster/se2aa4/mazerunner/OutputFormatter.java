@@ -1,11 +1,6 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
-public class OutputFormatter {
-    public String toCanonicalForm(String path) {
-        //could use this if i want to add spaces between groups of same directions
-        return path;
-    }
-
+public class OutputFormatter implements Formatter {
 
     public String toFactorizedForm(String path) {
         if (path == null || path.isEmpty()) {

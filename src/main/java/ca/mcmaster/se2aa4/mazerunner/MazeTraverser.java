@@ -1,6 +1,6 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
-public class MazeTraverser {
+public class MazeTraverser implements Traverser {
 
     public enum Direction {
         NORTH, EAST, SOUTH, WEST;
@@ -99,7 +99,7 @@ public class MazeTraverser {
         StringBuilder path = new StringBuilder();
 
         int iterationCount = 0;
-        int limit = 1000; // Set a limit to prevent infinite loops
+        int limit = 100000; // Set a limit to prevent infinite loops
 
         while ((x != exitCoordinates[0] || y != exitCoordinates[1]) && iterationCount < limit) {
             System.out.println("Step " + iterationCount + ": Position (" + x + ", " + y + "), Direction: " + direction);
@@ -148,7 +148,7 @@ public class MazeTraverser {
     }
 
 
-    private boolean pathSimulate(char[][] maze, String path,int startX, int startY, Direction startingDirection, int[] exitCoordinates ){
+    public boolean pathSimulate(char[][] maze, String path,int startX, int startY, Direction startingDirection, int[] exitCoordinates ){
         int x = startX;
         int y = startY;
         Direction direction = startingDirection; // Assuming the entrance faces east
