@@ -82,10 +82,10 @@ public class MazeTraverser implements Traverser {
 
 
 
-    public String traverseMaze(char[][] maze) {
+    public String traverseMaze(char[][] maze) throws MazeTraversalException {
         int[] exitCoordinates = findExitCoordinates(maze);
         if (exitCoordinates[0] == -1 || exitCoordinates[1] == -1) {
-            return "Exit not found";
+            throw new MazeTraversalException("Exit not found");
         }
 
         int x = findStartX(maze);
@@ -93,16 +93,13 @@ public class MazeTraverser implements Traverser {
         Direction direction = Direction.EAST;
 
         if (x == -1) {
-            return "Entrance not found";
+            throw new MazeTraversalException("Entrance not found");
         }
 
         StringBuilder path = new StringBuilder();
 
-        int iterationCount = 0;
-        int limit = 100000; // Set a limit to prevent infinite loops
 
-        while ((x != exitCoordinates[0] || y != exitCoordinates[1]) && iterationCount < limit) {
-            System.out.println("Step " + iterationCount + ": Position (" + x + ", " + y + "), Direction: " + direction);
+        while ((x != exitCoordinates[0] || y != exitCoordinates[1])) {
 
             if (canTurnRight(x, y, direction, maze)) {
                 direction = direction.turnRight();
@@ -124,22 +121,16 @@ public class MazeTraverser implements Traverser {
                 direction = direction.turnLeft().turnLeft();
                 path.append('L').append('L');
             }
-            iterationCount++;
         }
-
-        if (iterationCount >= limit) {
-            return "possible infinite loop";
-        }
-
         return path.toString();
     }
 
 
-    public boolean verifyPath(char[][] maze, String path) {
+    public boolean verifyPath(char[][] maze, String path) throws PathVerificationException {
         int startX = findStartX(maze);
         int[] exitCoordinates = findExitCoordinates(maze);
         if (startX == -1 || exitCoordinates[0] == -1) {
-            return false; //invalid maze
+            throw new PathVerificationException("Entrance or exit not found");
         }
 
         boolean checkEastWest = pathSimulate(maze, path, startX, 0, Direction.EAST, exitCoordinates);
@@ -173,10 +164,6 @@ public class MazeTraverser implements Traverser {
 
         return x == exitCoordinates[0] && y == exitCoordinates[1]; // Check if the path ends at the exit
     }
-
-
-
-
 
 }
 

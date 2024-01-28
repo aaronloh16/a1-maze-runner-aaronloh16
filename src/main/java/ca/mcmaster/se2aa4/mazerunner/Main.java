@@ -66,17 +66,23 @@ public class Main {
 
         MazeTraverser traverser = new MazeTraverser();
 
-        if (cmd.hasOption(verify)) {
-            String pathToVerify = cmd.getOptionValue(verify).replace(" ","");
-            System.out.println("Path to verify: " + pathToVerify);
-            boolean isValid = traverser.verifyPath(maze, pathToVerify);
-            logger.info("Path verification result: " + (isValid ? "Valid" : "Invalid"));
-        } else {
-            logger.info("**** Computing path:");
-            String path = traverser.traverseMaze(maze);
-            OutputFormatter formatter = new OutputFormatter();
-            String factorizedPath= formatter.toFactorizedForm(path);
-            System.out.println(factorizedPath);
+        try {
+            if (cmd.hasOption(verify)) {
+                String pathToVerify = cmd.getOptionValue(verify).replace(" ", "");
+                System.out.println("Path to verify: " + pathToVerify);
+                boolean isValid = traverser.verifyPath(maze, pathToVerify);
+                logger.info("Path verification result: " + (isValid ? "Valid" : "Invalid"));
+            } else {
+                logger.info("**** Computing path:");
+                String path = traverser.traverseMaze(maze);
+                OutputFormatter formatter = new OutputFormatter();
+                String factorizedPath = formatter.toFactorizedForm(path);
+                System.out.println(factorizedPath);
+            }
+        }catch (MazeTraversalException e) {
+            logger.error("Maze traversal failed: " + e.getMessage());
+        } catch (PathVerificationException e) {
+            logger.error("Path verification failed: " + e.getMessage());
         }
 
         logger.info("** End of MazeRunner");
