@@ -82,10 +82,10 @@ public class MazeTraverser implements Traverser {
 
 
 
-    public String traverseMaze(char[][] maze) {
+    public String traverseMaze(char[][] maze) throws MazeTraversalException {
         int[] exitCoordinates = findExitCoordinates(maze);
         if (exitCoordinates[0] == -1 || exitCoordinates[1] == -1) {
-            return "Exit not found";
+            throw new MazeTraversalException("Exit not found");
         }
 
         int x = findStartX(maze);
@@ -93,7 +93,7 @@ public class MazeTraverser implements Traverser {
         Direction direction = Direction.EAST;
 
         if (x == -1) {
-            return "Entrance not found";
+            throw new MazeTraversalException("Entrance not found");
         }
 
         StringBuilder path = new StringBuilder();
@@ -126,11 +126,11 @@ public class MazeTraverser implements Traverser {
     }
 
 
-    public boolean verifyPath(char[][] maze, String path) {
+    public boolean verifyPath(char[][] maze, String path) throws PathVerificationException {
         int startX = findStartX(maze);
         int[] exitCoordinates = findExitCoordinates(maze);
         if (startX == -1 || exitCoordinates[0] == -1) {
-            return false; //invalid maze
+            throw new PathVerificationException("Entrance or exit not found");
         }
 
         boolean checkEastWest = pathSimulate(maze, path, startX, 0, Direction.EAST, exitCoordinates);
