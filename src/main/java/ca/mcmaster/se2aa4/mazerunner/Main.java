@@ -15,6 +15,7 @@ public class Main {
 
     public static void main(String[] args) {
 
+
         Options options = new Options();
 
         Option input = new Option("i", "input", true, "input file path");
@@ -58,7 +59,7 @@ public class Main {
 
 
         logger.info("**** Maze to traverse:");
-        printMaze(maze);
+        logger.info("\n" + getMazeString(maze));
 
 
         MazeTraverser traverser = new MazeTraverser();
@@ -66,9 +67,9 @@ public class Main {
         try {
             if (cmd.hasOption(verify)) {
                 String pathToVerify = cmd.getOptionValue(verify).replace(" ", "");
-                System.out.println("Path to verify: " + pathToVerify);
+                logger.info("Path to verify: " + pathToVerify);
                 boolean isValid = traverser.verifyPath(maze, pathToVerify);
-                logger.info("Path verification result: " + (isValid ? "Valid" : "Invalid"));
+                System.out.println("Result: " + (isValid ? "correct path" : "incorrect path"));
             } else {
                 logger.info("**** Computing path:");
                 String path = traverser.traverseMaze(maze);
@@ -87,13 +88,15 @@ public class Main {
         }
 
 
-    private static void printMaze(char[][] maze){
+    private static String getMazeString(char[][] maze) {
+        StringBuilder sb = new StringBuilder();
         for (char[] row : maze) {
             for (char cell : row) {
-                System.out.print(cell);
+                sb.append(cell);
             }
-            System.out.println();
+            sb.append(System.lineSeparator());
         }
+        return sb.toString();
     }
 }
 
