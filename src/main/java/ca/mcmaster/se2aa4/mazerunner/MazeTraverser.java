@@ -139,7 +139,7 @@ public class MazeTraverser implements Traverser {
     }
 
 
-    public boolean pathSimulate(char[][] maze, String path,int startX, int startY, Direction startingDirection, int[] exitCoordinates ){
+    private boolean pathSimulate(char[][] maze, String path,int startX, int startY, Direction startingDirection, int[] exitCoordinates ){
         int x = startX;
         int y = startY;
         Direction direction = startingDirection; // Assuming the entrance faces east
