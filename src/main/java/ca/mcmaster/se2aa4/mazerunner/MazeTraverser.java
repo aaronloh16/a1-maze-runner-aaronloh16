@@ -133,8 +133,8 @@ public class MazeTraverser implements Traverser {
             throw new PathVerificationException("Entrance or exit not found");
         }
 
-        boolean checkEastWest = pathSimulate(maze, path, startX, 0, Direction.EAST, exitCoordinates);
-        boolean checkWestEast = pathSimulate(maze, path, exitCoordinates[0],exitCoordinates[1],Direction.WEST, new int[]{startX, 0});
+        boolean checkWestEast = pathSimulate(maze, path, startX, 0, Direction.EAST, exitCoordinates);
+        boolean checkEastWest = pathSimulate(maze, path, exitCoordinates[0],exitCoordinates[1],Direction.WEST, new int[]{startX, 0});
         return checkEastWest||checkWestEast;
     }
 
