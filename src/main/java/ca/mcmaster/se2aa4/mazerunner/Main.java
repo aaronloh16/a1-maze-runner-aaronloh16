@@ -15,9 +15,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        //This MVP is only for a straight path such as in straight.maz.txt, but the Mazeloader
-        // doesn't recognize the empty line as spaces for some reason so must place character at end of line
-
         Options options = new Options();
 
         Option input = new Option("i", "input", true, "input file path");

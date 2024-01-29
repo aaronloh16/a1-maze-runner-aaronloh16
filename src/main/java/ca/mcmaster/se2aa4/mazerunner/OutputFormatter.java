@@ -20,7 +20,7 @@ public class OutputFormatter implements Formatter {
                 appendCharAndCount(factorizedPath, prevChar, count);
 
 
-                factorizedPath.append(" "); //hard to test if works yet since can only go forward currently
+                factorizedPath.append(" ");
 
                 count = 1;
                 prevChar = currentChar;
@@ -34,7 +34,6 @@ public class OutputFormatter implements Formatter {
         return factorizedPath.toString();
     }
 
-    //Helper method to appends count and direction to Path
     private void appendCharAndCount(StringBuilder sb, char character, int count) {
         if (count > 1) {
             sb.append(count);
